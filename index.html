@@ -508,6 +508,22 @@
       color: var(--muted);
     }
 
+    .details-button {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 760;
+    }
+
+    .details-button:hover {
+      border-color: var(--ink);
+      background: #f4f1e8;
+    }
+
     .viewer-modal {
       position: fixed;
       inset: 0;
@@ -521,6 +537,146 @@
 
     .viewer-modal[hidden] {
       display: none;
+    }
+
+    .product-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 75;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(14, 14, 13, 0.58);
+      backdrop-filter: blur(12px);
+    }
+
+    .product-modal[hidden] {
+      display: none;
+    }
+
+    .product-panel {
+      position: relative;
+      width: min(1080px, 100%);
+      max-height: min(820px, calc(100vh - 36px));
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      overflow: auto;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .detail-gallery {
+      min-height: 520px;
+      display: grid;
+      align-content: center;
+      padding: clamp(22px, 4vw, 42px);
+      background:
+        radial-gradient(circle at 50% 72%, rgba(23, 23, 23, 0.1), transparent 34%),
+        #fafafa;
+    }
+
+    .detail-gallery img {
+      width: 100%;
+      max-height: 440px;
+      object-fit: contain;
+      filter: drop-shadow(0 24px 24px rgba(23, 23, 23, 0.18));
+    }
+
+    .detail-info {
+      display: grid;
+      gap: 18px;
+      align-content: start;
+      padding: clamp(22px, 4vw, 42px);
+    }
+
+    .detail-info h2 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 0.98;
+    }
+
+    .detail-info p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .detail-kicker {
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .detail-price {
+      font-size: 1.5rem;
+      font-weight: 850;
+    }
+
+    .detail-block {
+      display: grid;
+      gap: 10px;
+    }
+
+    .detail-block h3 {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .detail-sizes {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .detail-size {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfaf6;
+      cursor: pointer;
+      font-weight: 760;
+    }
+
+    .detail-size.selected,
+    .detail-size:hover {
+      color: #fff;
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .detail-actions {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 10px;
+    }
+
+    .detail-actions .button {
+      width: 100%;
+    }
+
+    .detail-secondary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .detail-secondary button {
+      min-height: 40px;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 760;
+    }
+
+    .modal-close.light {
+      color: var(--ink);
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.82);
     }
 
     .viewer-panel {
@@ -706,6 +862,7 @@
       }
 
       .shop-tools,
+      .product-panel,
       .viewer-panel,
       .checkout {
         grid-template-columns: 1fr;
@@ -748,6 +905,14 @@
 
       .buy-row {
         grid-template-columns: 1fr;
+      }
+
+      .detail-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-sizes {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
       .viewer-canvas-wrap,
@@ -839,6 +1004,36 @@
   </main>
 
   <button class="top-button" type="button" id="topButton" aria-label="Volver arriba">^</button>
+  <div class="product-modal" id="productModal" hidden>
+    <div class="product-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <button class="modal-close light" type="button" id="detailClose" aria-label="Cerrar ficha de producto">X</button>
+      <div class="detail-gallery">
+        <img id="detailImage" src="" alt="" />
+      </div>
+      <div class="detail-info">
+        <span class="detail-kicker" id="detailBrand">Marca</span>
+        <h2 id="detailTitle">Producto</h2>
+        <p id="detailDescription">Ficha de producto.</p>
+        <strong class="detail-price" id="detailPrice">0 EUR</strong>
+        <div class="detail-block">
+          <h3>Talla EU</h3>
+          <div class="detail-sizes" id="detailSizes"></div>
+        </div>
+        <div class="detail-actions">
+          <div class="qty" aria-label="Unidades en ficha de producto">
+            <button type="button" id="detailQtyMinus">-</button>
+            <span id="detailQty">1</span>
+            <button type="button" id="detailQtyPlus">+</button>
+          </div>
+          <button class="button" type="button" id="detailAdd">Anadir al carrito</button>
+        </div>
+        <div class="detail-secondary">
+          <button type="button" id="detailView360">Ver 360</button>
+          <button type="button" id="detailBack">Volver al catalogo</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="viewer-modal" id="viewerModal" hidden>
     <div class="viewer-panel" role="dialog" aria-modal="true" aria-labelledby="viewerTitle">
       <div class="viewer-copy">
@@ -866,6 +1061,7 @@
         price: 125,
         stock: 9,
         sizes: [38, 39, 40, 41, 42, 43, 44, 45],
+        description: "Clasico de piel con silueta limpia, amortiguacion suave y presencia diaria para looks urbanos.",
         image: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/74c93f5a-ac10-44cd-8788-74c17cda1f9d/AIR+FORCE+1+%2707.png"
       },
       {
@@ -876,6 +1072,7 @@
         price: 120,
         stock: 6,
         sizes: [38, 39, 40, 41, 42, 43, 44],
+        description: "Perfil bajo inspirado en basket, combinacion facil y ajuste firme para uso diario.",
         image: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/3c61eb30-ecb5-4200-909b-7a3d1a6e5794/NIKE+DUNK+LOW+RETRO.png"
       },
       {
@@ -886,6 +1083,7 @@
         price: 160,
         stock: 5,
         sizes: [39, 40, 41, 42, 43, 44, 45, 46],
+        description: "Unidad Air visible, upper ligero y sensacion amortiguada para caminar con comodidad.",
         image: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/cf12c4c2-228d-4033-8592-3ee6fd87072c/AIR+MAX+270.png"
       },
       {
@@ -896,6 +1094,7 @@
         price: 120,
         stock: 11,
         sizes: [36, 37, 38, 39, 40, 41, 42, 43, 44],
+        description: "Icono terrace con perfil bajo, empeine de piel y suela gum para rotacion casual.",
         image: "https://assets.adidas.com/images/w_900,f_auto,q_auto/d5038371fef94197be263dc1b5bdc063_9366/Samba_OG_Shoes_White_B75806_01_00_standard.jpg"
       },
       {
@@ -906,6 +1105,7 @@
         price: 130,
         stock: 7,
         sizes: [37, 38, 39, 40, 41, 42, 43, 44],
+        description: "Suede clasico con estilo indoor, ajuste estrecho y una silueta muy reconocible.",
         image: "https://assets.adidas.com/images/w_900,f_auto,q_auto/00d433957e25498b84e30ef570829682_9366/Gazelle_Indoor_Shoes_Blue_IF9641_01_00_standard.jpg"
       },
       {
@@ -916,6 +1116,7 @@
         price: 180,
         stock: 4,
         sizes: [39, 40, 41, 42, 43, 44, 45, 46],
+        description: "Zapatilla de running con retorno de energia, upper tecnico y pisada estable.",
         image: "https://assets.adidas.com/images/w_900,f_auto,q_auto/4eecf1fd2fab48468a3a4d8c913b94c1_9366/Ultraboost_5X_Shoes_White_JI1334_01_00_standard.jpg"
       },
       {
@@ -926,6 +1127,7 @@
         price: 95,
         stock: 10,
         sizes: [37, 38, 39, 40, 41, 42, 43, 44],
+        description: "Terrace sneaker de cuero con paneles limpios, suela baja y aire retro.",
         image: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_900,h_900/global/396464/75/sv01/fnd/PNA/fmt/png/Palermo-Leather-Sneakers"
       },
       {
@@ -936,6 +1138,7 @@
         price: 90,
         stock: 8,
         sizes: [36, 37, 38, 39, 40, 41, 42, 43],
+        description: "Version amplia del clasico Suede, con cordones gruesos y presencia street.",
         image: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_900,h_900/global/395205/01/sv01/fnd/PNA/fmt/png/Suede-XL-Sneakers"
       },
       {
@@ -946,6 +1149,7 @@
         price: 110,
         stock: 5,
         sizes: [38, 39, 40, 41, 42, 43, 44],
+        description: "Silueta baja de motorsport con ante, puntera afinada y look minimalista.",
         image: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_900,h_900/global/398846/02/sv01/fnd/PNA/fmt/png/Speedcat-OG-Sneakers"
       },
       {
@@ -956,6 +1160,7 @@
         price: 110,
         stock: 13,
         sizes: [37, 38, 39, 40, 41, 42, 43, 44, 45],
+        description: "Runner clasica de diario con mezcla de suede y malla, comoda y facil de combinar.",
         image: "https://nb.scene7.com/is/image/NB/ml574evg_nb_02_i?wid=900&hei=900"
       },
       {
@@ -966,6 +1171,7 @@
         price: 160,
         stock: 6,
         sizes: [39, 40, 41, 42, 43, 44, 45],
+        description: "Look tecnico de los 2000 con amortiguacion generosa y construccion premium.",
         image: "https://nb.scene7.com/is/image/NB/m2002rcc_nb_02_i?wid=900&hei=900"
       },
       {
@@ -976,6 +1182,7 @@
         price: 220,
         stock: 3,
         sizes: [40, 41, 42, 43, 44, 45, 46],
+        description: "Modelo premium Made in USA con amortiguacion moderna y silueta running refinada.",
         image: "https://nb.scene7.com/is/image/NB/m990gl6_nb_02_i?wid=900&hei=900"
       },
       {
@@ -986,6 +1193,7 @@
         price: 180,
         stock: 8,
         sizes: [39, 40, 41, 42, 43, 44, 45, 46],
+        description: "Trail iconico adaptado a ciudad, con sujecion estable y agarre tecnico.",
         image: "https://cdn.dam.salomon.com/b0fff940-2909-4454-a498-b2f401614dd6/L41086600/PNG-2000px-max-72dpi.png?auto=avif&bg-color=f5f5f5&canvas=116p%2C144p&fit=cover&format=pjpg&optimize=medium&width=1200"
       },
       {
@@ -996,6 +1204,7 @@
         price: 150,
         stock: 6,
         sizes: [39, 40, 41, 42, 43, 44, 45, 46, 47],
+        description: "Zapatilla de trail con tacos marcados, agarre agresivo y proteccion para terreno suelto.",
         image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=900&q=80"
       },
       {
@@ -1006,6 +1215,7 @@
         price: 190,
         stock: 4,
         sizes: [40, 41, 42, 43, 44, 45],
+        description: "Sportstyle tecnico con estructura robusta, ventilacion y detalles de archivo Salomon.",
         image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=900&q=80"
       }
     ];
@@ -1031,6 +1241,21 @@
     const toast = document.querySelector("#toast");
     const scrollProgress = document.querySelector("#scrollProgress");
     const topButton = document.querySelector("#topButton");
+    const productModal = document.querySelector("#productModal");
+    const detailClose = document.querySelector("#detailClose");
+    const detailImage = document.querySelector("#detailImage");
+    const detailBrand = document.querySelector("#detailBrand");
+    const detailTitle = document.querySelector("#detailTitle");
+    const detailDescription = document.querySelector("#detailDescription");
+    const detailPrice = document.querySelector("#detailPrice");
+    const detailSizes = document.querySelector("#detailSizes");
+    const detailQty = document.querySelector("#detailQty");
+    const detailQtyMinus = document.querySelector("#detailQtyMinus");
+    const detailQtyPlus = document.querySelector("#detailQtyPlus");
+    const detailAdd = document.querySelector("#detailAdd");
+    const detailView360 = document.querySelector("#detailView360");
+    const detailBack = document.querySelector("#detailBack");
+    let activeDetailId = null;
 
     function normalizeCart(items) {
       return items.map((item) => ({ ...item, qty: Number(item.qty || 1) }));
@@ -1121,7 +1346,7 @@
 
         return `
           <article class="product ${selected.size ? "selected" : ""}" data-id="${product.id}">
-            <div class="product-media">
+            <div class="product-media" data-detail="${product.id}">
               <img src="${product.image}" alt="${product.name}" loading="lazy" />
               <span class="tag">${product.brand}</span>
               ${lowStock ? `<span class="stock-tag">${product.stock} uds.</span>` : ""}
@@ -1129,10 +1354,11 @@
             </div>
             <div class="product-body">
               <div>
-                <h3>${product.name}</h3>
+                <h3 data-detail="${product.id}">${product.name}</h3>
                 <div class="meta"><span>${product.style} - EU ${product.sizes[0]}-${product.sizes[product.sizes.length - 1]}</span><span class="price">${formatEuro(product.price)}</span></div>
               </div>
               <div class="sizes" aria-label="Tallas disponibles para ${product.name}">${sizes}</div>
+              <button class="details-button" type="button" data-detail="${product.id}">Detalles</button>
               <div class="buy-row">
                 <div class="qty" aria-label="Unidades para ${product.name}">
                   <button type="button" data-action="minus" data-id="${product.id}">-</button>
@@ -1177,6 +1403,36 @@
       showToast(`${product.name} talla ${selected.size} x${selected.qty} anadido al carrito.`);
     }
 
+    function renderProductDetail() {
+      const product = PRODUCTS.find((item) => item.id === activeDetailId);
+      if (!product) return;
+
+      const selected = getSelection(product.id);
+      detailImage.src = product.image;
+      detailImage.alt = product.name;
+      detailBrand.textContent = `${product.brand} / ${product.style}`;
+      detailTitle.textContent = product.name;
+      detailDescription.textContent = product.description;
+      detailPrice.textContent = formatEuro(product.price);
+      detailQty.textContent = selected.qty;
+      detailSizes.innerHTML = product.sizes.map((size) => (
+        `<button class="detail-size ${selected.size === size ? "selected" : ""}" type="button" data-detail-size="${size}">${size}</button>`
+      )).join("");
+    }
+
+    function openProductDetail(productId) {
+      activeDetailId = productId;
+      renderProductDetail();
+      productModal.hidden = false;
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeProductDetail() {
+      productModal.hidden = true;
+      document.body.style.overflow = "";
+      activeDetailId = null;
+    }
+
     function updateScrollState() {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const progress = max > 0 ? (window.scrollY / max) * 100 : 0;
@@ -1207,10 +1463,16 @@
       const qtyButton = event.target.closest("[data-action]");
       const addButton = event.target.closest("[data-add]");
       const viewButton = event.target.closest("[data-view360]");
+      const detailButton = event.target.closest("[data-detail]");
 
       if (viewButton) {
         const product = PRODUCTS.find((item) => item.id === viewButton.dataset.view360);
         document.dispatchEvent(new CustomEvent("openShoe360", { detail: product }));
+        return;
+      }
+
+      if (detailButton) {
+        openProductDetail(detailButton.dataset.detail);
         return;
       }
 
@@ -1236,6 +1498,51 @@
       }
     });
 
+    detailSizes.addEventListener("click", (event) => {
+      const sizeButton = event.target.closest("[data-detail-size]");
+      if (!sizeButton || !activeDetailId) return;
+
+      const selected = getSelection(activeDetailId);
+      selected.size = Number(sizeButton.dataset.detailSize);
+      renderProductDetail();
+      renderProducts();
+    });
+
+    detailQtyMinus.addEventListener("click", () => {
+      if (!activeDetailId) return;
+      const selected = getSelection(activeDetailId);
+      selected.qty = Math.max(1, selected.qty - 1);
+      renderProductDetail();
+      renderProducts();
+    });
+
+    detailQtyPlus.addEventListener("click", () => {
+      if (!activeDetailId) return;
+      const product = PRODUCTS.find((item) => item.id === activeDetailId);
+      const selected = getSelection(activeDetailId);
+      selected.qty = Math.min(product.stock, selected.qty + 1);
+      renderProductDetail();
+      renderProducts();
+    });
+
+    detailAdd.addEventListener("click", () => {
+      if (!activeDetailId) return;
+      addToCart(activeDetailId);
+    });
+
+    detailView360.addEventListener("click", () => {
+      const product = PRODUCTS.find((item) => item.id === activeDetailId);
+      if (!product) return;
+      closeProductDetail();
+      document.dispatchEvent(new CustomEvent("openShoe360", { detail: product }));
+    });
+
+    detailBack.addEventListener("click", closeProductDetail);
+    detailClose.addEventListener("click", closeProductDetail);
+    productModal.addEventListener("click", (event) => {
+      if (event.target === productModal) closeProductDetail();
+    });
+
     document.querySelector("#cartButton").addEventListener("click", () => {
       window.open("carrito.html", "_blank");
     });
@@ -1255,6 +1562,9 @@
     });
     window.addEventListener("message", (event) => {
       if (event.data && event.data.type === "tantrumSportsCartUpdated") refreshCartFromStorage();
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !productModal.hidden) closeProductDetail();
     });
     updateScrollState();
   </script>
