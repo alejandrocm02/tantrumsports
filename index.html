@@ -803,6 +803,166 @@
       font-weight: 820;
     }
 
+    .cart-drawer {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: grid;
+      justify-items: end;
+      background: rgba(14, 14, 13, 0.52);
+      backdrop-filter: blur(10px);
+    }
+
+    .cart-drawer[hidden] {
+      display: none;
+    }
+
+    .cart-panel {
+      width: min(440px, 100%);
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      background: #fff;
+      box-shadow: -18px 0 45px rgba(23, 23, 23, 0.18);
+    }
+
+    .cart-head,
+    .cart-footer {
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .cart-head h2 {
+      margin: 0;
+      font-size: 1.35rem;
+    }
+
+    .cart-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .cart-lines {
+      overflow: auto;
+      padding: 8px 18px;
+    }
+
+    .cart-line {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cart-line:last-child {
+      border-bottom: 0;
+    }
+
+    .cart-line img {
+      width: 82px;
+      height: 82px;
+      border-radius: 8px;
+      object-fit: contain;
+      background: #fafafa;
+      filter: drop-shadow(0 12px 12px rgba(23, 23, 23, 0.12));
+    }
+
+    .cart-line h3 {
+      margin: 0 0 5px;
+      font-size: 0.98rem;
+      line-height: 1.25;
+    }
+
+    .cart-line p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .cart-line-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .cart-line .qty {
+      width: 112px;
+      min-height: 36px;
+      grid-template-columns: 32px 1fr 32px;
+    }
+
+    .remove-line {
+      border: 0;
+      color: var(--danger);
+      background: transparent;
+      cursor: pointer;
+      font-weight: 760;
+    }
+
+    .cart-empty {
+      display: grid;
+      place-items: center;
+      min-height: 300px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .cart-footer {
+      display: grid;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      border-bottom: 0;
+    }
+
+    .drawer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--muted);
+    }
+
+    .drawer-row.total {
+      color: var(--ink);
+      font-size: 1.18rem;
+      font-weight: 850;
+    }
+
+    .drawer-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .drawer-actions .button {
+      width: 100%;
+    }
+
+    .drawer-actions .button.ghost {
+      color: var(--ink);
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .drawer-actions .button.danger {
+      background: var(--danger);
+    }
+
     .toast,
     .top-button {
       position: fixed;
@@ -915,6 +1075,10 @@
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
+      .cart-panel {
+        width: 100%;
+      }
+
       .viewer-canvas-wrap,
       #shoeCanvas {
         min-height: 360px;
@@ -991,7 +1155,7 @@
     <section class="checkout" id="pedido" aria-labelledby="checkout-title">
       <div>
         <h2 id="checkout-title">Tu pedido</h2>
-        <p>El carrito se abre en una nueva ventana y conserva cada modelo con talla, cantidad y precio.</p>
+        <p>El carrito lateral conserva cada modelo con talla, cantidad y precio sin sacarte del catalogo.</p>
         <button class="button" type="button" id="checkoutButton">Abrir carrito</button>
       </div>
       <div class="summary" aria-live="polite">
@@ -1004,6 +1168,28 @@
   </main>
 
   <button class="top-button" type="button" id="topButton" aria-label="Volver arriba">^</button>
+  <aside class="cart-drawer" id="cartDrawer" hidden>
+    <div class="cart-panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+      <div class="cart-head">
+        <div>
+          <h2 id="drawerTitle">Tu carrito</h2>
+          <p id="drawerCount">0 unidades</p>
+        </div>
+        <button class="cart-close" type="button" id="cartClose" aria-label="Cerrar carrito">X</button>
+      </div>
+      <div class="cart-lines" id="drawerItems"></div>
+      <div class="cart-footer">
+        <div class="drawer-row"><span>Subtotal</span><strong id="drawerSubtotal">0 EUR</strong></div>
+        <div class="drawer-row"><span>Envio</span><strong id="drawerShipping">0 EUR</strong></div>
+        <div class="drawer-row total"><span>Total</span><strong id="drawerTotal">0 EUR</strong></div>
+        <div class="drawer-actions">
+          <button class="button" type="button" id="drawerCheckout">Finalizar pedido</button>
+          <button class="button ghost" type="button" id="drawerContinue">Seguir comprando</button>
+          <button class="button danger" type="button" id="drawerClear">Vaciar carrito</button>
+        </div>
+      </div>
+    </div>
+  </aside>
   <div class="product-modal" id="productModal" hidden>
     <div class="product-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
       <button class="modal-close light" type="button" id="detailClose" aria-label="Cerrar ficha de producto">X</button>
@@ -1255,6 +1441,16 @@
     const detailAdd = document.querySelector("#detailAdd");
     const detailView360 = document.querySelector("#detailView360");
     const detailBack = document.querySelector("#detailBack");
+    const cartDrawer = document.querySelector("#cartDrawer");
+    const cartClose = document.querySelector("#cartClose");
+    const drawerItems = document.querySelector("#drawerItems");
+    const drawerCount = document.querySelector("#drawerCount");
+    const drawerSubtotal = document.querySelector("#drawerSubtotal");
+    const drawerShipping = document.querySelector("#drawerShipping");
+    const drawerTotal = document.querySelector("#drawerTotal");
+    const drawerCheckout = document.querySelector("#drawerCheckout");
+    const drawerContinue = document.querySelector("#drawerContinue");
+    const drawerClear = document.querySelector("#drawerClear");
     let activeDetailId = null;
 
     function normalizeCart(items) {
@@ -1290,6 +1486,81 @@
       summarySubtotal.textContent = formatEuro(subtotal);
       summaryShipping.textContent = formatEuro(shipping);
       summaryTotal.textContent = formatEuro(subtotal + shipping);
+      renderCartDrawer(units, subtotal, shipping);
+    }
+
+    function renderCartDrawer(units, subtotal, shipping) {
+      drawerCount.textContent = `${units} ${units === 1 ? "unidad" : "unidades"}`;
+      drawerSubtotal.textContent = formatEuro(subtotal);
+      drawerShipping.textContent = formatEuro(shipping);
+      drawerTotal.textContent = formatEuro(subtotal + shipping);
+
+      if (cart.length === 0) {
+        drawerItems.innerHTML = `
+          <div class="cart-empty">
+            <div>
+              <strong>Tu carrito esta vacio</strong>
+              <p>Elige talla y unidades en el catalogo para empezar el pedido.</p>
+            </div>
+          </div>
+        `;
+        drawerClear.disabled = true;
+        drawerCheckout.disabled = true;
+        return;
+      }
+
+      drawerClear.disabled = false;
+      drawerCheckout.disabled = false;
+      drawerItems.innerHTML = cart.map((item, index) => `
+        <article class="cart-line">
+          <img src="${item.image}" alt="${item.name}" />
+          <div>
+            <h3>${item.name}</h3>
+            <p>${item.brand} - Talla EU ${item.size}</p>
+            <p><strong>${formatEuro(item.price)}</strong></p>
+            <div class="cart-line-controls">
+              <div class="qty" aria-label="Unidades de ${item.name}">
+                <button type="button" data-cart-action="minus" data-cart-index="${index}">-</button>
+                <span>${item.qty}</span>
+                <button type="button" data-cart-action="plus" data-cart-index="${index}">+</button>
+              </div>
+              <button class="remove-line" type="button" data-cart-action="remove" data-cart-index="${index}">Eliminar</button>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function openCartDrawer() {
+      updateSummary();
+      cartDrawer.hidden = false;
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeCartDrawer() {
+      cartDrawer.hidden = true;
+      if (productModal.hidden) document.body.style.overflow = "";
+    }
+
+    function updateCartLine(index, action) {
+      const item = cart[index];
+      if (!item) return;
+
+      if (action === "remove") {
+        cart.splice(index, 1);
+      }
+
+      if (action === "plus") {
+        item.qty = Math.min(item.stock || 12, item.qty + 1);
+      }
+
+      if (action === "minus") {
+        item.qty -= 1;
+        if (item.qty <= 0) cart.splice(index, 1);
+      }
+
+      saveCart();
+      updateSummary();
     }
 
     function getSelection(productId) {
@@ -1401,6 +1672,7 @@
       saveCart();
       updateSummary();
       showToast(`${product.name} talla ${selected.size} x${selected.qty} anadido al carrito.`);
+      openCartDrawer();
     }
 
     function renderProductDetail() {
@@ -1543,12 +1815,29 @@
       if (event.target === productModal) closeProductDetail();
     });
 
-    document.querySelector("#cartButton").addEventListener("click", () => {
-      window.open("carrito.html", "_blank");
+    document.querySelector("#cartButton").addEventListener("click", openCartDrawer);
+    document.querySelector("#checkoutButton").addEventListener("click", openCartDrawer);
+
+    cartClose.addEventListener("click", closeCartDrawer);
+    drawerContinue.addEventListener("click", closeCartDrawer);
+    cartDrawer.addEventListener("click", (event) => {
+      if (event.target === cartDrawer) closeCartDrawer();
     });
 
-    document.querySelector("#checkoutButton").addEventListener("click", () => {
-      window.open("carrito.html", "_blank");
+    drawerItems.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-cart-action]");
+      if (!button) return;
+      updateCartLine(Number(button.dataset.cartIndex), button.dataset.cartAction);
+    });
+
+    drawerClear.addEventListener("click", () => {
+      cart = [];
+      saveCart();
+      updateSummary();
+    });
+
+    drawerCheckout.addEventListener("click", () => {
+      window.location.href = "carrito.html";
     });
 
     topButton.addEventListener("click", () => {
@@ -1565,6 +1854,7 @@
     });
     window.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !productModal.hidden) closeProductDetail();
+      if (event.key === "Escape" && !cartDrawer.hidden) closeCartDrawer();
     });
     updateScrollState();
   </script>
