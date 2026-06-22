@@ -257,7 +257,7 @@
       top: 70px;
       z-index: 25;
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1fr) auto;
       gap: 12px;
       align-items: center;
       margin: 6px 0 24px;
@@ -266,6 +266,45 @@
       border-radius: 8px;
       background: rgba(248, 246, 239, 0.92);
       backdrop-filter: blur(18px);
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      min-height: 42px;
+      padding: 10px 40px 10px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .search-box input:focus {
+      outline: 3px solid rgba(14, 143, 125, 0.18);
+      border-color: var(--accent);
+    }
+
+    .clear-search {
+      position: absolute;
+      top: 50%;
+      right: 7px;
+      width: 30px;
+      height: 30px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      transform: translateY(-50%);
+      font-weight: 900;
+    }
+
+    .clear-search:hover {
+      color: var(--ink);
+      background: #ece8dc;
     }
 
     .filter {
@@ -1051,6 +1090,7 @@
       }
 
       .nav,
+      .search-box,
       .filters,
       .selects {
         width: 100%;
@@ -1129,6 +1169,10 @@
       </div>
 
       <div class="shop-tools" aria-label="Herramientas de compra">
+        <div class="search-box">
+          <input id="searchInput" type="search" placeholder="Buscar modelo, marca o uso" aria-label="Buscar zapatillas" autocomplete="off" />
+          <button class="clear-search" type="button" id="clearSearch" aria-label="Limpiar busqueda">X</button>
+        </div>
         <div class="filters" id="brandFilters" aria-label="Filtros de marca"></div>
         <div class="selects">
           <select id="styleFilter" aria-label="Filtrar por uso">
@@ -1424,6 +1468,8 @@
     const styleFilter = document.querySelector("#styleFilter");
     const sizeFilter = document.querySelector("#sizeFilter");
     const sortSelect = document.querySelector("#sortSelect");
+    const searchInput = document.querySelector("#searchInput");
+    const clearSearch = document.querySelector("#clearSearch");
     const toast = document.querySelector("#toast");
     const scrollProgress = document.querySelector("#scrollProgress");
     const topButton = document.querySelector("#topButton");
@@ -1585,12 +1631,15 @@
       const style = styleFilter.value;
       const size = sizeFilter.value;
       const sort = sortSelect.value;
+      const query = searchInput.value.trim().toLowerCase();
 
       return PRODUCTS.filter((product) => {
         const brandMatch = activeBrand === "all" || product.brand === activeBrand;
         const styleMatch = style === "all" || product.style === style;
         const sizeMatch = size === "all" || product.sizes.includes(Number(size));
-        return brandMatch && styleMatch && sizeMatch;
+        const searchable = `${product.name} ${product.brand} ${product.style} ${product.description}`.toLowerCase();
+        const searchMatch = query === "" || searchable.includes(query);
+        return brandMatch && styleMatch && sizeMatch && searchMatch;
       }).sort((a, b) => {
         if (sort === "priceAsc") return a.price - b.price;
         if (sort === "priceDesc") return b.price - a.price;
@@ -1601,10 +1650,13 @@
 
     function renderProducts() {
       const products = getFilteredProducts();
-      resultCount.textContent = `${products.length} ${products.length === 1 ? "modelo disponible" : "modelos disponibles"}`;
+      const query = searchInput.value.trim();
+      resultCount.textContent = query
+        ? `${products.length} ${products.length === 1 ? "resultado" : "resultados"} para "${query}"`
+        : `${products.length} ${products.length === 1 ? "modelo disponible" : "modelos disponibles"}`;
 
       if (products.length === 0) {
-        productGrid.innerHTML = `<div class="empty-grid">No hay zapatillas con esos filtros.</div>`;
+        productGrid.innerHTML = `<div class="empty-grid">No hay zapatillas para esa busqueda y filtros.</div>`;
         return;
       }
 
@@ -1728,6 +1780,14 @@
 
     [styleFilter, sizeFilter, sortSelect].forEach((control) => {
       control.addEventListener("change", renderProducts);
+    });
+
+    searchInput.addEventListener("input", renderProducts);
+
+    clearSearch.addEventListener("click", () => {
+      searchInput.value = "";
+      searchInput.focus();
+      renderProducts();
     });
 
     productGrid.addEventListener("click", (event) => {

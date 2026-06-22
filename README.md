@@ -5,6 +5,7 @@ Tienda web estatica de zapatillas creada con HTML, CSS y JavaScript vanilla.
 ## Estado actual
 
 - Catalogo de 15 zapatillas: Nike, Adidas, Puma, New Balance y Salomon.
+- Buscador por modelo, marca, uso y descripcion.
 - Filtros por marca, uso y talla EU.
 - Ordenacion por destacados, precio y stock.
 - Tarjetas con seleccion de talla, unidades y estado visual.
@@ -42,6 +43,8 @@ https://alejandrocm02.github.io/tantrumsports/
 
 ## Historial de mejoras
 
+- Version actual: buscador integrado en el catalogo.
+- `41d30f5`: README actualizado con estado e historial del proyecto.
 - `2f62282`: checkout con formulario de envio, pago simulado y confirmacion.
 - `e6a562c`: mini-carrito lateral editable.
 - `f88aa29`: ficha de producto modal.
@@ -50,7 +53,6 @@ https://alejandrocm02.github.io/tantrumsports/
 
 ## Proximas mejoras sugeridas
 
-- Buscador por modelo, marca y categoria.
 - Filtros avanzados por color, precio y disponibilidad.
 - Imagenes oficiales consistentes para todos los modelos restantes.
 - Mejorar la vista 360 con modelos `.glb`.
