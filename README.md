@@ -11,14 +11,15 @@ Tienda web estatica de zapatillas creada con HTML, CSS y JavaScript vanilla.
 - Tarjetas con seleccion de talla, unidades y estado visual.
 - Ficha de producto modal con descripcion, imagen grande, tallas, unidades y acceso a vista 360.
 - Vista 360 generativa con Three.js.
+- Imagenes de producto revisadas para evitar fotos genericas en los modelos Salomon y en la portada.
 - Mini-carrito lateral editable sin salir del catalogo.
 - Checkout completo en `carrito.html` con envio, pago simulado y confirmacion de pedido.
-- Persistencia del carrito con `localStorage`.
+- Persistencia del carrito y del historial local de pedidos con `localStorage`.
 
 ## Paginas
 
 - `index.html`: tienda principal, catalogo, fichas de producto, vista 360 y mini-carrito.
-- `carrito.html`: checkout completo con resumen editable y confirmacion.
+- `carrito.html`: checkout completo con resumen editable, confirmacion e historial local de pedidos.
 
 ## Estructura
 
@@ -43,7 +44,8 @@ https://alejandrocm02.github.io/tantrumsports/
 
 ## Historial de mejoras
 
-- Version actual: filtros avanzados por color, precio y disponibilidad.
+- Version actual: imagenes revisadas e historial local de pedidos.
+- `e190b5f`: filtros avanzados por color, precio y disponibilidad.
 - `279bd72`: buscador integrado en el catalogo.
 - `41d30f5`: README actualizado con estado e historial del proyecto.
 - `2f62282`: checkout con formulario de envio, pago simulado y confirmacion.
@@ -54,6 +56,6 @@ https://alejandrocm02.github.io/tantrumsports/
 
 ## Proximas mejoras sugeridas
 
-- Imagenes oficiales consistentes para todos los modelos restantes.
 - Mejorar la vista 360 con modelos `.glb`.
-- Guardar pedidos simulados en historial local.
+- Documentar fuentes de imagen por proveedor.
+- Anadir estados simulados de envio al historial.

@@ -136,7 +136,8 @@
     .panel,
     .summary,
     .empty,
-    .confirmation {
+    .confirmation,
+    .history {
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--panel);
@@ -428,6 +429,74 @@
       font-weight: 900;
     }
 
+    .history {
+      margin-top: 22px;
+      padding: 18px;
+    }
+
+    .history-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .history-head h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .order-card {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfaf6;
+    }
+
+    .order-head,
+    .order-meta,
+    .order-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .order-head strong {
+      font-size: 1.05rem;
+    }
+
+    .order-meta,
+    .order-line {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .order-items {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .status-pill {
+      padding: 6px 9px;
+      border-radius: 999px;
+      color: var(--accent-dark);
+      background: rgba(14, 143, 125, 0.12);
+      font-size: 0.82rem;
+      font-weight: 850;
+    }
+
     [hidden] {
       display: none !important;
     }
@@ -456,6 +525,14 @@
 
       .field-grid {
         grid-template-columns: 1fr;
+      }
+
+      .history-head,
+      .order-head,
+      .order-meta,
+      .order-line {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
       .item {
@@ -598,14 +675,26 @@
         <button class="button" type="button" id="newOrder">Volver a la tienda</button>
       </div>
     </section>
+
+    <section class="history" id="orderHistory" hidden aria-labelledby="history-title">
+      <div class="history-head">
+        <h2 id="history-title">Historial de pedidos</h2>
+        <button class="button secondary" type="button" id="clearHistory">Vaciar historial</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </section>
   </main>
 
   <script>
     const storageKey = "tantrumSportsCart";
+    const orderStorageKey = "tantrumSportsOrders";
     const cartItems = document.querySelector("#cartItems");
     const checkoutLayout = document.querySelector("#checkoutLayout");
     const emptyState = document.querySelector("#emptyState");
     const confirmation = document.querySelector("#confirmation");
+    const orderHistory = document.querySelector("#orderHistory");
+    const historyList = document.querySelector("#historyList");
+    const clearHistory = document.querySelector("#clearHistory");
     const itemsCount = document.querySelector("#itemsCount");
     const subtotalEl = document.querySelector("#subtotal");
     const shippingEl = document.querySelector("#shipping");
@@ -617,14 +706,55 @@
     const cardFields = document.querySelector("#cardFields");
     const orderCode = document.querySelector("#orderCode");
 
-    let cart = normalizeCart(JSON.parse(localStorage.getItem(storageKey) || "[]"));
+    let cart = normalizeCart(parseStorage(storageKey));
+    let orders = normalizeOrders(parseStorage(orderStorageKey));
 
     function normalizeCart(items) {
+      if (!Array.isArray(items)) return [];
       return items.map((item) => ({ ...item, qty: Number(item.qty || 1), stock: Number(item.stock || 12) }));
     }
 
+    function normalizeOrders(items) {
+      if (!Array.isArray(items)) return [];
+      return items
+        .filter((item) => item && item.code && Array.isArray(item.items))
+        .slice(0, 10);
+    }
+
+    function parseStorage(key) {
+      try {
+        return JSON.parse(localStorage.getItem(key) || "[]");
+      } catch (error) {
+        localStorage.removeItem(key);
+        return [];
+      }
+    }
+
     function formatEuro(value) {
-      return `${value} EUR`;
+      const amount = Number(value);
+      return `${Number.isFinite(amount) ? amount : 0} EUR`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function formatOrderDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "Fecha no disponible";
+      return new Intl.DateTimeFormat("es-ES", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(date);
     }
 
     function saveCart() {
@@ -632,6 +762,10 @@
       if (window.opener && !window.opener.closed) {
         window.opener.postMessage({ type: "tantrumSportsCartUpdated" }, "*");
       }
+    }
+
+    function saveOrders() {
+      localStorage.setItem(orderStorageKey, JSON.stringify(orders.slice(0, 10)));
     }
 
     function goShopping() {
@@ -678,6 +812,68 @@
           </div>
         </article>
       `).join("");
+    }
+
+    function renderOrderHistory() {
+      const hasOrders = orders.length > 0;
+      orderHistory.hidden = !hasOrders;
+      clearHistory.disabled = !hasOrders;
+
+      if (!hasOrders) {
+        historyList.innerHTML = "";
+        return;
+      }
+
+      historyList.innerHTML = orders.map((order) => {
+        const date = formatOrderDate(order.date);
+        const units = order.items.reduce((sum, item) => sum + Number(item.qty || 0), 0);
+        const total = Number(order.totals?.total || 0);
+        const city = escapeHtml(order.customer?.city || "Sin ciudad");
+        const items = order.items.map((item) => `
+          <li class="order-line">
+            <span>${escapeHtml(item.name)} - EU ${escapeHtml(item.size)}</span>
+            <strong>${Number(item.qty || 0)} x ${formatEuro(item.price)}</strong>
+          </li>
+        `).join("");
+
+        return `
+          <article class="order-card">
+            <div class="order-head">
+              <strong>${escapeHtml(order.code)}</strong>
+              <span class="status-pill">${escapeHtml(order.status || "Preparando pedido")}</span>
+            </div>
+            <div class="order-meta">
+              <span>${date} - ${city}</span>
+              <strong>${units} uds. - ${formatEuro(total)}</strong>
+            </div>
+            <ul class="order-items">${items}</ul>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function createOrder() {
+      const totals = getTotals();
+      const code = `TS-${Date.now().toString().slice(-6)}`;
+      const order = {
+        code,
+        date: new Date().toISOString(),
+        status: "Preparando pedido",
+        customer: {
+          firstName: document.querySelector("#firstName").value.trim(),
+          lastName: document.querySelector("#lastName").value.trim(),
+          email: document.querySelector("#email").value.trim(),
+          city: document.querySelector("#city").value.trim(),
+          postalCode: document.querySelector("#postalCode").value.trim()
+        },
+        payment: document.querySelector("input[name='payment']:checked").value,
+        items: cart.map((item) => ({ ...item })),
+        totals
+      };
+
+      orders = normalizeOrders([order, ...orders]);
+      saveOrders();
+      return order;
     }
 
     function updateCartItem(index, action) {
@@ -744,15 +940,23 @@
       renderCart();
     });
 
+    clearHistory.addEventListener("click", () => {
+      orders = [];
+      saveOrders();
+      renderOrderHistory();
+    });
+
     checkoutForm.addEventListener("submit", (event) => {
       event.preventDefault();
       const error = validateCheckout();
       formError.textContent = error;
       if (error) return;
 
-      orderCode.textContent = `TS-${Date.now().toString().slice(-6)}`;
+      const order = createOrder();
+      orderCode.textContent = order.code;
       cart = [];
       saveCart();
+      renderOrderHistory();
       checkoutLayout.hidden = true;
       emptyState.hidden = true;
       confirmation.hidden = false;
@@ -772,6 +976,7 @@
 
     saveCart();
     renderCart();
+    renderOrderHistory();
   </script>
 </body>
 </html>
