@@ -25,6 +25,7 @@
 
     html {
       scroll-behavior: smooth;
+      scroll-padding-top: 86px;
       scrollbar-color: var(--accent) #e9e5da;
       scrollbar-width: thin;
     }
@@ -35,6 +36,7 @@
       color: var(--ink);
       background: var(--paper);
       letter-spacing: 0;
+      overscroll-behavior-y: contain;
     }
 
     body::-webkit-scrollbar {
@@ -49,6 +51,15 @@
       border: 3px solid #e9e5da;
       border-radius: 999px;
       background: var(--accent);
+    }
+
+    .nav,
+    .filters,
+    .selects,
+    .cart-lines,
+    .product-panel {
+      scrollbar-color: rgba(14, 143, 125, 0.7) rgba(233, 229, 218, 0.78);
+      scrollbar-width: thin;
     }
 
     button,
@@ -136,7 +147,7 @@
     }
 
     .hero {
-      min-height: 72vh;
+      min-height: 62vh;
       display: grid;
       align-items: end;
       padding: clamp(34px, 6vw, 76px) var(--page-pad);
@@ -148,7 +159,7 @@
     }
 
     .hero-content {
-      max-width: 790px;
+      max-width: 720px;
       padding-bottom: clamp(18px, 4vh, 44px);
     }
 
@@ -161,7 +172,7 @@
     }
 
     h1 {
-      max-width: 11ch;
+      max-width: 12ch;
       margin: 0;
       font-size: clamp(3rem, 9vw, 7.4rem);
       line-height: 0.9;
@@ -214,6 +225,43 @@
 
     main {
       padding: 0 var(--page-pad) 58px;
+    }
+
+    .entry-points {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 28px 0 8px;
+    }
+
+    .entry-link {
+      min-height: 120px;
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      background: #fff;
+      text-decoration: none;
+      box-shadow: 0 8px 22px rgba(31, 29, 24, 0.05);
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .entry-link:hover {
+      border-color: var(--accent);
+      box-shadow: 0 18px 36px rgba(14, 143, 125, 0.13);
+      transform: translateY(-3px);
+    }
+
+    .entry-link strong {
+      font-size: 1.05rem;
+    }
+
+    .entry-link span {
+      color: var(--muted);
+      line-height: 1.45;
     }
 
     .mini-stats {
@@ -1076,6 +1124,10 @@
     }
 
     @media (max-width: 1120px) {
+      .entry-points {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .catalog {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
@@ -1114,6 +1166,10 @@
       }
 
       .catalog {
+        grid-template-columns: 1fr;
+      }
+
+      .entry-points {
         grid-template-columns: 1fr;
       }
 
@@ -1158,12 +1214,16 @@
   <div class="scroll-progress" id="scrollProgress"></div>
 
   <header class="topbar">
-    <a class="brand" href="#inicio" aria-label="TantrumSports - volver al inicio">
+    <a class="brand" href="index.html#inicio" aria-label="TantrumSports - volver al inicio">
       <span class="brand-mark">TS</span>
       <span>TantrumSports</span>
     </a>
     <nav class="nav" aria-label="Navegacion principal">
+      <a href="index.html#inicio">Inicio</a>
       <a href="#catalogo">Catalogo</a>
+      <a href="marcas.html">Marcas</a>
+      <a href="guia-tallas.html">Guia de tallas</a>
+      <a href="envios.html">Envios</a>
       <a href="#pedido">Pedido</a>
       <button class="cart-pill" type="button" id="cartButton">Ver carrito: <span id="cartCount">0</span></button>
     </nav>
@@ -1172,11 +1232,12 @@
   <section class="hero" id="inicio">
     <div class="hero-content">
       <p class="eyebrow">Sneakers, running y trail</p>
-      <h1>Zapatillas listas para salir.</h1>
-      <p>Modelos seleccionados de Nike, Adidas, Puma, New Balance y Salomon con tallas EU, stock por modelo y unidades reales en el carrito.</p>
+      <h1>TantrumSports</h1>
+      <p>Una tienda directa y limpia para elegir zapatillas reales por marca, talla, uso y stock antes de pasar por caja.</p>
       <div class="hero-actions">
-        <a class="button" href="#catalogo">Ver catalogo</a>
-        <a class="button secondary" href="#pedido">Ver pedido</a>
+        <a class="button" href="#catalogo">Comprar ahora</a>
+        <a class="button secondary" href="marcas.html">Ver marcas</a>
+        <a class="button secondary" href="guia-tallas.html">Guia de tallas</a>
       </div>
       <div class="mini-stats" aria-label="Ventajas de compra">
         <span class="mini-stat">Envio gratis desde 150 EUR</span>
@@ -1187,6 +1248,25 @@
   </section>
 
   <main>
+    <section class="entry-points" aria-label="Accesos rapidos">
+      <a class="entry-link" href="marcas.html">
+        <strong>Marcas</strong>
+        <span>Nike, Adidas, Puma, New Balance y Salomon con modelos destacados.</span>
+      </a>
+      <a class="entry-link" href="guia-tallas.html">
+        <strong>Guia de tallas</strong>
+        <span>Equivalencias EU, US y UK para comprar con menos dudas.</span>
+      </a>
+      <a class="entry-link" href="envios.html">
+        <strong>Envios y cambios</strong>
+        <span>Condiciones claras para entrega, devoluciones y cambios de talla.</span>
+      </a>
+      <a class="entry-link" href="carrito.html">
+        <strong>Checkout</strong>
+        <span>Finaliza el pedido y consulta el historial local de compras simuladas.</span>
+      </a>
+    </section>
+
     <section id="catalogo" aria-labelledby="catalog-title">
       <div class="section-head">
         <div>
@@ -1488,7 +1568,7 @@
         color: "Negro",
         sizes: [39, 40, 41, 42, 43, 44, 45, 46, 47],
         description: "Zapatilla de trail con tacos marcados, agarre agresivo y proteccion para terreno suelto.",
-        image: "https://tcrunningco.com/cdn/shop/products/5005B609-CA02-44AD-8C49-33E6B108B642_700x700.png?v=1679851273"
+        image: "https://cdn.dam.salomon.com/063ccd80-d050-4696-8830-b31b00b785fe/L49225100/PNG-2000px-max-72dpi.png?auto=avif&bg-color=f5f5f5&canvas=116p%2C144p&fit=cover&format=pjpg&optimize=medium&width=1200"
       },
       {
         id: "salomon-acs-pro",
@@ -1508,7 +1588,7 @@
     const brands = ["Todas", "Nike", "Adidas", "Puma", "New Balance", "Salomon"];
     const selections = new Map();
     let activeBrand = "all";
-    let cart = normalizeCart(JSON.parse(localStorage.getItem(storageKey) || "[]"));
+    let cart = normalizeCart(parseStorage(storageKey));
     let toastTimer;
 
     const brandFilters = document.querySelector("#brandFilters");
@@ -1558,11 +1638,22 @@
     let activeDetailId = null;
 
     function normalizeCart(items) {
+      if (!Array.isArray(items)) return [];
       return items.map((item) => ({ ...item, qty: Number(item.qty || 1) }));
     }
 
     function formatEuro(value) {
-      return `${value} EUR`;
+      const amount = Number(value);
+      return `${Number.isFinite(amount) ? amount : 0} EUR`;
+    }
+
+    function parseStorage(key) {
+      try {
+        return JSON.parse(localStorage.getItem(key) || "[]");
+      } catch (error) {
+        localStorage.removeItem(key);
+        return [];
+      }
     }
 
     function saveCart() {
@@ -1570,7 +1661,7 @@
     }
 
     function refreshCartFromStorage() {
-      cart = normalizeCart(JSON.parse(localStorage.getItem(storageKey) || "[]"));
+      cart = normalizeCart(parseStorage(storageKey));
       updateSummary();
     }
 

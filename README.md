@@ -11,14 +11,18 @@ Tienda web estatica de zapatillas creada con HTML, CSS y JavaScript vanilla.
 - Tarjetas con seleccion de talla, unidades y estado visual.
 - Ficha de producto modal con descripcion, imagen grande, tallas, unidades y acceso a vista 360.
 - Vista 360 generativa con Three.js.
-- Imagenes de producto revisadas para evitar fotos genericas en los modelos Salomon y en la portada.
+- Imagenes de producto reales y revisadas para evitar fotos genericas.
+- Inicio mas limpio con accesos rapidos a paginas internas.
 - Mini-carrito lateral editable sin salir del catalogo.
 - Checkout completo en `carrito.html` con envio, pago simulado y confirmacion de pedido.
 - Persistencia del carrito y del historial local de pedidos con `localStorage`.
 
 ## Paginas
 
-- `index.html`: tienda principal, catalogo, fichas de producto, vista 360 y mini-carrito.
+- `index.html`: inicio, catalogo, fichas de producto, vista 360 y mini-carrito.
+- `marcas.html`: pagina de marcas con modelos destacados e imagenes reales.
+- `guia-tallas.html`: tabla de tallas EU, US, UK y consejos de ajuste.
+- `envios.html`: informacion de envio, cambios y flujo de pedido.
 - `carrito.html`: checkout completo con resumen editable, confirmacion e historial local de pedidos.
 
 ## Estructura
@@ -26,7 +30,11 @@ Tienda web estatica de zapatillas creada con HTML, CSS y JavaScript vanilla.
 ```text
 .
 |-- index.html
+|-- marcas.html
+|-- guia-tallas.html
+|-- envios.html
 |-- carrito.html
+|-- pages.css
 |-- README.md
 |-- .nojekyll
 `-- .gitignore
@@ -44,7 +52,8 @@ https://alejandrocm02.github.io/tantrumsports/
 
 ## Historial de mejoras
 
-- Version actual: imagenes revisadas e historial local de pedidos.
+- Version actual: inicio mas limpio, paginas internas nuevas, scrolls mejorados e imagenes reales revisadas.
+- `8a3b068`: imagenes revisadas e historial local de pedidos.
 - `e190b5f`: filtros avanzados por color, precio y disponibilidad.
 - `279bd72`: buscador integrado en el catalogo.
 - `41d30f5`: README actualizado con estado e historial del proyecto.
@@ -59,3 +68,4 @@ https://alejandrocm02.github.io/tantrumsports/
 - Mejorar la vista 360 con modelos `.glb`.
 - Documentar fuentes de imagen por proveedor.
 - Anadir estados simulados de envio al historial.
+- Crear paginas de detalle individuales por zapatilla.

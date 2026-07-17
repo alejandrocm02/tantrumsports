@@ -23,6 +23,7 @@
 
     html {
       scroll-behavior: smooth;
+      scroll-padding-top: 86px;
       scrollbar-color: var(--accent) #e9e5da;
       scrollbar-width: thin;
     }
@@ -33,6 +34,7 @@
       color: var(--ink);
       background: var(--paper);
       letter-spacing: 0;
+      overscroll-behavior-y: contain;
     }
 
     button,
@@ -74,6 +76,28 @@
       border-radius: 8px;
       color: #fff;
       background: var(--ink);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-color: rgba(14, 143, 125, 0.7) rgba(233, 229, 218, 0.78);
+      scrollbar-width: thin;
+    }
+
+    .nav a {
+      min-height: 38px;
+      padding: 9px 13px;
+      border-radius: 999px;
+      color: var(--ink);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav a:hover {
+      background: #ece8dc;
     }
 
     main {
@@ -523,6 +547,10 @@
         flex-direction: column;
       }
 
+      .nav {
+        width: 100%;
+      }
+
       .field-grid {
         grid-template-columns: 1fr;
       }
@@ -557,7 +585,14 @@
       <span class="brand-mark">TS</span>
       <span>TantrumSports</span>
     </a>
-    <button class="button secondary" type="button" id="continueTop">Seguir comprando</button>
+    <nav class="nav" aria-label="Navegacion principal">
+      <a href="index.html#inicio">Inicio</a>
+      <a href="index.html#catalogo">Catalogo</a>
+      <a href="marcas.html">Marcas</a>
+      <a href="guia-tallas.html">Guia de tallas</a>
+      <a href="envios.html">Envios</a>
+      <button class="button secondary" type="button" id="continueTop">Seguir comprando</button>
+    </nav>
   </header>
 
   <main>
