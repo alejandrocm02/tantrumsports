@@ -69,7 +69,8 @@ npm.cmd run dev
 ```
 
 3. Abre `http://127.0.0.1:5173`.
-4. Antes de publicar cambios, ejecuta:
+4. Si la pagina estaba abierta y el catalogo no aparece, recarga la pestana despues de levantar el servidor.
+5. Antes de publicar cambios, ejecuta:
 
 ```text
 npm.cmd run validate
@@ -89,7 +90,8 @@ https://alejandrocm02.github.io/tantrumsports/
 
 ## Historial de mejoras
 
-- Version actual: proyecto preparado para VS Code con CSS, JavaScript y datos separados.
+- Version actual: tareas de VS Code ajustadas para arrancar Node en Windows y servir el catalogo correctamente.
+- `6e8f12b`: proyecto preparado para VS Code con CSS, JavaScript y datos separados.
 - `d4122e7`: inicio mas limpio, paginas internas nuevas, scrolls mejorados e imagenes reales revisadas.
 - `8a3b068`: imagenes revisadas e historial local de pedidos.
 - `e190b5f`: filtros avanzados por color, precio y disponibilidad.

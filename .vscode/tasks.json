@@ -4,14 +4,20 @@
     {
       "label": "TantrumSports: servidor local",
       "type": "shell",
-      "command": "node scripts/dev-server.js",
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "scripts/dev-server.js"
+      ],
       "isBackground": true,
       "problemMatcher": []
     },
     {
       "label": "TantrumSports: validar",
       "type": "shell",
-      "command": "node scripts/validate.js",
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "scripts/validate.js"
+      ],
       "problemMatcher": []
     }
   ]
