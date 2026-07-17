@@ -1,0 +1,8 @@
+{
+  "editor.formatOnSave": true,
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "liveServer.settings.root": "/",
+  "liveServer.settings.port": 5500
+}

@@ -13,6 +13,7 @@ Tienda web estatica de zapatillas creada con HTML, CSS y JavaScript vanilla.
 - Vista 360 generativa con Three.js.
 - Imagenes de producto reales y revisadas para evitar fotos genericas.
 - Inicio mas limpio con accesos rapidos a paginas internas.
+- Proyecto organizado para VS Code con carpetas `assets/`, `scripts/` y `.vscode/`.
 - Mini-carrito lateral editable sin salir del catalogo.
 - Checkout completo en `carrito.html` con envio, pago simulado y confirmacion de pedido.
 - Persistencia del carrito y del historial local de pedidos con `localStorage`.
@@ -34,11 +35,47 @@ Tienda web estatica de zapatillas creada con HTML, CSS y JavaScript vanilla.
 |-- guia-tallas.html
 |-- envios.html
 |-- carrito.html
-|-- pages.css
+|-- package.json
+|-- assets
+|   |-- css
+|   |   |-- home.css
+|   |   |-- checkout.css
+|   |   `-- pages.css
+|   |-- data
+|   |   `-- products.js
+|   `-- js
+|       |-- store.js
+|       |-- checkout.js
+|       `-- shoe-viewer.js
+|-- scripts
+|   |-- dev-server.js
+|   `-- validate.js
+|-- .vscode
+|   |-- settings.json
+|   |-- tasks.json
+|   `-- extensions.json
 |-- README.md
 |-- .nojekyll
 `-- .gitignore
 ```
+
+## Trabajo en VS Code
+
+1. Abre la carpeta del proyecto en VS Code.
+2. Ejecuta la tarea `TantrumSports: servidor local` o usa:
+
+```text
+npm.cmd run dev
+```
+
+3. Abre `http://127.0.0.1:5173`.
+4. Antes de publicar cambios, ejecuta:
+
+```text
+npm.cmd run validate
+```
+
+Si usas una terminal que no sea PowerShell, tambien puedes usar `npm run dev` y `npm run validate`.
 
 ## Publicacion
 
@@ -52,7 +89,8 @@ https://alejandrocm02.github.io/tantrumsports/
 
 ## Historial de mejoras
 
-- Version actual: inicio mas limpio, paginas internas nuevas, scrolls mejorados e imagenes reales revisadas.
+- Version actual: proyecto preparado para VS Code con CSS, JavaScript y datos separados.
+- `d4122e7`: inicio mas limpio, paginas internas nuevas, scrolls mejorados e imagenes reales revisadas.
 - `8a3b068`: imagenes revisadas e historial local de pedidos.
 - `e190b5f`: filtros avanzados por color, precio y disponibilidad.
 - `279bd72`: buscador integrado en el catalogo.
@@ -69,3 +107,4 @@ https://alejandrocm02.github.io/tantrumsports/
 - Documentar fuentes de imagen por proveedor.
 - Anadir estados simulados de envio al historial.
 - Crear paginas de detalle individuales por zapatilla.
+- Separar componentes de interfaz en modulos mas pequenos si el proyecto crece.
